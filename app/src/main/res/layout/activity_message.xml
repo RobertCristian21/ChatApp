@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".MessageActivity">
+
+    <ListView
+        android:id="@+id/ListMessageAll"
+        android:layout_width="wrap_content"
+        android:layout_height="468dp"
+        android:inputType="textMultiLine"
+        android:scrollbars="none"
+        android:smoothScrollbar="true"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/editTextNewText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_conversion_absoluteHeight="495dp"
+        tools:layout_conversion_absoluteWidth="368dp" />
+
+    <EditText
+        android:id="@+id/editTextNewText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Message"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ListMessageAll"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_conversion_absoluteHeight="175dp"
+        tools:layout_conversion_absoluteWidth="1dp"
+        tools:layout_editor_absoluteX="392dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <Button
+        android:id="@+id/buttonSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.78"
+        app:layout_constraintStart_toEndOf="@+id/editTextNewText"
+        app:layout_constraintTop_toBottomOf="@+id/ListMessageAll"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_conversion_absoluteHeight="88dp"
+        tools:layout_conversion_absoluteWidth="1dp" />
+</android.support.constraint.ConstraintLayout>
