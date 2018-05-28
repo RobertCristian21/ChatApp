@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".MessageActivity">
+    tools:context=".Activities.MessageActivity">
 
     <ListView
-        android:id="@+id/ListMessageAll"
+        android:id="@+id/list_view_allmessages"
         android:layout_width="wrap_content"
         android:layout_height="468dp"
         android:inputType="textMultiLine"
@@ -18,7 +18,7 @@
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/editTextNewText"
+        app:layout_constraintBottom_toTopOf="@id/edit_text_newtext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +28,7 @@
         tools:layout_conversion_absoluteWidth="368dp" />
 
     <EditText
-        android:id="@+id/editTextNewText"
+        android:id="@+id/edit_text_newtext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ListMessageAll"
+        app:layout_constraintTop_toBottomOf="@+id/list_view_allmessages"
         app:layout_constraintVertical_bias="1.0"
         tools:layout_conversion_absoluteHeight="175dp"
         tools:layout_conversion_absoluteWidth="1dp"
@@ -46,7 +46,7 @@
         tools:layout_editor_absoluteY="89dp" />
 
     <Button
-        android:id="@+id/buttonSend"
+        android:id="@+id/button_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
@@ -55,8 +55,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.78"
-        app:layout_constraintStart_toEndOf="@+id/editTextNewText"
-        app:layout_constraintTop_toBottomOf="@+id/ListMessageAll"
+        app:layout_constraintStart_toEndOf="@+id/edit_text_newtext"
+        app:layout_constraintTop_toBottomOf="@+id/list_view_allmessages"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_conversion_absoluteHeight="88dp"
         tools:layout_conversion_absoluteWidth="1dp" />
