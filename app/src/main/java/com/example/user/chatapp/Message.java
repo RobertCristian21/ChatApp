@@ -9,7 +9,7 @@ public class Message {
         this.sender = sender;
         this.receiver = receiver;
         this.text = text;
-        this.password = password; 
+        this.password = password;
     }
     public Message(){
     }
