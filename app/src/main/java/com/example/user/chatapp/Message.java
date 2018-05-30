@@ -3,13 +3,14 @@ package com.example.user.chatapp;
 import java.util.Objects;
 
 public class Message {
-    String sender,receiver,text,password;
+    String sender,receiver,text,password,algorithm;
 
-    public Message(String sender, String receiver, String text,String password) {
+    public Message(String sender, String receiver, String text,String password,String algorithm) {
         this.sender = sender;
         this.receiver = receiver;
         this.text = text;
         this.password = password;
+        this.algorithm=algorithm;
     }
     public Message(){
     }
@@ -18,6 +19,7 @@ public class Message {
         this.setReceiver(a.getReceiver());
         this.setSender(a.getSender());
         this.setPassword(a.getPassword());
+        this.setAlgorithm(a.getAlgorithm());
     }
 
     public String getSender() {
@@ -52,6 +54,14 @@ public class Message {
         this.password = password;
     }
 
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -60,13 +70,14 @@ public class Message {
         return Objects.equals(sender, message.sender) &&
                 Objects.equals(receiver, message.receiver) &&
                 Objects.equals(text, message.text)&&
-                Objects.equals(password,message.password);
+                Objects.equals(password,message.password)&&
+                Objects.equals(algorithm,message.algorithm);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(sender, receiver, text,password);
+        return Objects.hash(sender, receiver, text,password,algorithm);
     }
 }
 
