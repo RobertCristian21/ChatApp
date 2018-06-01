@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class StartActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private EditText Username;
     private EditText Password;
@@ -28,23 +28,27 @@ public class StartActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
+
         Username=findViewById(R.id.edit_text_username);
         Password=findViewById(R.id.edit_text_password);
         Login=findViewById(R.id.button_login);
         Register=findViewById(R.id.button_register);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user=mAuth.getCurrentUser();
+
         if(user!=null){
             finish();
-            startActivity(new Intent(StartActivity.this,HomeActivity.class));
+            startActivity(new Intent(LoginActivity.this,HomeActivity.class));
         }
+
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(Username.getText().toString().length()<4||Password.getText().toString().length()<6)
-                    Toast.makeText(StartActivity.this,"Login failed, please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this,"Login failed, please try again.", Toast.LENGTH_SHORT).show();
                 else
                     validate(Username.getText().toString(),Password.getText().toString());
             }
@@ -61,16 +65,16 @@ public class StartActivity extends AppCompatActivity {
                                 DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
                                 String id=mDatabase.push().getKey();
                                 mDatabase.child("Users").child(id).setValue(Username.getText().toString());
-                                startActivity(new Intent(StartActivity.this, HomeActivity.class));
+                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
 
                             } else {
-                                Toast.makeText(StartActivity.this, "Could not register!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Could not register!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 }
                 else
-                    Toast.makeText(StartActivity.this,"Please enter valid content!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this,"Please enter valid content!",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -80,9 +84,9 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    startActivity(new Intent(StartActivity.this,HomeActivity.class));
+                    startActivity(new Intent(LoginActivity.this,HomeActivity.class));
                 }else{
-                    Toast.makeText(StartActivity.this,"Login failed, please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this,"Login failed, please try again.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

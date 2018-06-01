@@ -1,40 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.HomeActivity">
+    tools:context=".Activities.HomeActivity"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:theme="@style/Theme.AppCompat.NoActionBar">
 
-    <Button
-        android:id="@+id/button_signout"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Sign out"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.971"
-        app:layout_constraintStart_toStartOf="parent" />
 
-    <ListView
-        android:id="@+id/list_view_allusers"
-        android:layout_width="368dp"
-        android:layout_height="439dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button_signout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-</android.support.constraint.ConstraintLayout>
+
+    <android.support.design.widget.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tablayout"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/pager">
+
+
+    </android.support.v4.view.ViewPager>
+</LinearLayout>

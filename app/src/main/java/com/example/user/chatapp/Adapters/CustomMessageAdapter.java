@@ -1,4 +1,4 @@
-package com.example.user.chatapp;
+package com.example.user.chatapp.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,18 +9,21 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.user.chatapp.Message;
+import com.example.user.chatapp.R;
+
 import java.util.ArrayList;
 
-public class CustomAdapter extends ArrayAdapter<Message> {
-    public CustomAdapter(@NonNull Context context, ArrayList<Message> messages) {
-        super(context, R.layout.custon_row,messages);
+public class CustomMessageAdapter extends ArrayAdapter<Message> {
+    public CustomMessageAdapter(@NonNull Context context, ArrayList<Message> messages) {
+        super(context, R.layout.custom_message_row,messages);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater messageInflater=LayoutInflater.from(getContext());
-        View customView=messageInflater.inflate(R.layout.custon_row,parent,false);
+        View customView=messageInflater.inflate(R.layout.custom_message_row,parent,false);
 
         String message=this.getItem(position).getText();
         String sender=this.getItem(position).getSender();

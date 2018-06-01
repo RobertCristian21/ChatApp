@@ -3,7 +3,6 @@ package com.example.user.chatapp.Activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,7 +11,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.user.chatapp.CustomAdapter;
+import com.example.user.chatapp.Adapters.CustomMessageAdapter;
 import com.example.user.chatapp.Encrypt;
 import com.example.user.chatapp.Message;
 import com.example.user.chatapp.R;
@@ -22,7 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.BreakIterator;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,6 +55,7 @@ public class MessageActivity extends AppCompatActivity {
                 newMessage.setSender(getIntent().getStringExtra("currentUser"));
 
                 newMessage.setReceiver(getIntent().getStringExtra("clickedUser"));
+
                 if(newMessage.getReceiver().compareTo(newMessage.getSender())>0)
                     passAux+=newMessage.getSender()+newMessage.getReceiver();
                 else
@@ -118,7 +117,7 @@ public class MessageActivity extends AppCompatActivity {
 
                     }
                 }
-                final ArrayAdapter<Message> adapter2=new CustomAdapter(MessageActivity.this,messages);
+                final ArrayAdapter<Message> adapter2=new CustomMessageAdapter(MessageActivity.this,messages);
                 //final ArrayAdapter<String> adapter2=new ArrayAdapter<String>(MessageActivity.this,android.R.layout.simple_dropdown_item_1line,messages);
                 ListMessages.setAdapter(adapter2);
             }

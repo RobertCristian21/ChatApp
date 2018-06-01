@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".Activities.MessageActivity">
+    tools:context=".Activities.MessageActivity"
+
+    >
 
     <ListView
         android:id="@+id/list_view_allmessages"
