@@ -1,14 +1,31 @@
 package com.example.user.chatapp.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.user.chatapp.Activities.LoginActivity;
+import com.example.user.chatapp.Adapters.CustomContactAdapter;
+import com.example.user.chatapp.Adapters.CustomUserAdapter;
+import com.example.user.chatapp.Contact;
 import com.example.user.chatapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +44,11 @@ public class ContactsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    public ListView listView;
+    Button SingOut;
+    DatabaseReference dref= FirebaseDatabase.getInstance().getReference();
+    FirebaseAuth mAuth=FirebaseAuth.getInstance();
+    public ArrayList<String> Users=new ArrayList<>();
     private OnFragmentInteractionListener mListener;
 
     public ContactsFragment() {
@@ -64,8 +85,25 @@ public class ContactsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_contacts, container, false);
+        final View view=inflater.inflate(R.layout.fragment_contacts,container,false);
+        listView=view.findViewById(R.id.list_view_contacts);
+
+        SingOut =  view.findViewById(R.id.button_signout);
+
+        FirebaseUser user=mAuth.getCurrentUser();
+        if(user==null){
+            startActivity(new Intent(getContext(),LoginActivity.class));
+        }
+        if(SingOut !=null) {
+            SingOut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAuth.signOut();
+                    startActivity(new Intent(getContext(), LoginActivity.class));
+                }
+            });
+        }
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,5 +143,32 @@ public class ContactsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        dref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Users.clear();
+                if(mAuth!=null&&listView!=null) {
+                    Users.clear();
+                    for (DataSnapshot userSnapshot : dataSnapshot.child("Contacts").getChildren()) {
+                        Contact contact=userSnapshot.getValue(Contact.class);
+
+                        if (contact.getUsername().equals(mAuth.getCurrentUser().getEmail()))
+                            for(String e : contact.getUsersList())
+                                Users.add(e);
+                    }
+                    final CustomContactAdapter adapterUsers = new CustomContactAdapter(getContext(),Users);
+                    listView.setAdapter(adapterUsers);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

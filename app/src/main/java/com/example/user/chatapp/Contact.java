@@ -5,16 +5,20 @@ import java.util.ArrayList;
 
 public class Contact {
     String username;
-    ArrayList<String> contacts;
+    ArrayList<String> usersList=new ArrayList<>();
 
-    public Contact(String username, ArrayList<String> contacts) {
+    public Contact(String username, ArrayList<String> usersList) {
         this.username = username;
-        this.contacts=contacts;
+        for( String e: usersList)
+            this.AddValue(e);
     }
-
+    public void AddValue(String val){
+        usersList.add(val);
+    }
     public Contact(Contact value) {
         this.username=value.getUsername();
-        this.contacts=value.getContacts();
+        for (String e:value.getUsersList())
+            this.AddValue(e);
     }
 
     public String getUsername() {
@@ -25,12 +29,13 @@ public class Contact {
         this.username = username;
     }
 
-    public ArrayList<String> getContacts() {
-        return contacts;
+    public ArrayList<String> getUsersList() {
+        return usersList;
     }
 
-    public void setContacts(ArrayList<String> contacts) {
-        this.contacts = contacts;
+    public void setContacts(ArrayList<String> usersList) {
+        for (String e:usersList)
+            this.AddValue(e);
     }
 
     public Contact() {
