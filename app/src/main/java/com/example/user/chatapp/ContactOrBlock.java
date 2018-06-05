@@ -3,11 +3,11 @@ package com.example.user.chatapp;
 
 import java.util.ArrayList;
 
-public class Contact {
+public class ContactOrBlock {
     String username;
     ArrayList<String> usersList=new ArrayList<>();
 
-    public Contact(String username, ArrayList<String> usersList) {
+    public ContactOrBlock(String username, ArrayList<String> usersList) {
         this.username = username;
         for( String e: usersList)
             this.AddValue(e);
@@ -15,7 +15,7 @@ public class Contact {
     public void AddValue(String val){
         usersList.add(val);
     }
-    public Contact(Contact value) {
+    public ContactOrBlock(ContactOrBlock value) {
         this.username=value.getUsername();
         for (String e:value.getUsersList())
             this.AddValue(e);
@@ -38,7 +38,7 @@ public class Contact {
             this.AddValue(e);
     }
 
-    public Contact() {
+    public ContactOrBlock() {
     }
 
 }

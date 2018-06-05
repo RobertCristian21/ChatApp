@@ -8,10 +8,11 @@ import android.os.Bundle;
 
 import com.example.user.chatapp.Adapters.PagerAdapters;
 import com.example.user.chatapp.Fragments.AllUsersFragment;
+import com.example.user.chatapp.Fragments.BlocksFragment;
 import com.example.user.chatapp.Fragments.ContactsFragment;
 import com.example.user.chatapp.R;
 
-public class HomeActivity extends AppCompatActivity implements AllUsersFragment.OnFragmentInteractionListener, ContactsFragment.OnFragmentInteractionListener{
+public class HomeActivity extends AppCompatActivity implements AllUsersFragment.OnFragmentInteractionListener, ContactsFragment.OnFragmentInteractionListener, BlocksFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +21,9 @@ public class HomeActivity extends AppCompatActivity implements AllUsersFragment.
         setContentView(R.layout.activity_home);
 
         TabLayout tabLayout = findViewById(R.id.tablayout);
-        tabLayout.addTab(tabLayout.newTab().setText("All Users"));
         tabLayout.addTab(tabLayout.newTab().setText("Contacts"));
+        tabLayout.addTab(tabLayout.newTab().setText("All Users"));
+        tabLayout.addTab(tabLayout.newTab().setText("Blocked Users"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = findViewById(R.id.pager);

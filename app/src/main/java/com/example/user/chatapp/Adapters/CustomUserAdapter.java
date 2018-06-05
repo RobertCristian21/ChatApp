@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.chatapp.Activities.MessageActivity;
-import com.example.user.chatapp.Contact;
+import com.example.user.chatapp.ContactOrBlock;
 import com.example.user.chatapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -50,7 +50,6 @@ public class CustomUserAdapter extends ArrayAdapter<String> {
 
         final Button add_delete=customView.findViewById(R.id.button_add_delete);
 
-
         messageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,10 +69,9 @@ public class CustomUserAdapter extends ArrayAdapter<String> {
         });
         return customView;
     }
-
     private void addToContacts(String email, String user) {
-        Contact newContact=new Contact();
-        newContact.setUsername(email);
+        ContactOrBlock newContactOrBlock =new ContactOrBlock();
+        newContactOrBlock.setUsername(email);
         DatabaseReference dref = FirebaseDatabase.getInstance().getReference();
         ArrayList<String>previousContacts=new ArrayList<>();
         if(databaseContacts!=null&&key!=null){
@@ -82,15 +80,15 @@ public class CustomUserAdapter extends ArrayAdapter<String> {
                     previousContacts.add(e);
             if (!previousContacts.contains(user))
                 previousContacts.add(user);
-            newContact.setContacts(previousContacts);
+            newContactOrBlock.setContacts(previousContacts);
 
-            dref.child("Contacts").child(key).setValue(newContact);
+            dref.child("Contacts").child(key).setValue(newContactOrBlock);
         }
         else
         {
             previousContacts.add(user);
-            newContact.setContacts(previousContacts);
-            dref.child("Contacts").child(dref.push().getKey()).setValue(newContact);
+            newContactOrBlock.setContacts(previousContacts);
+            dref.child("Contacts").child(dref.push().getKey()).setValue(newContactOrBlock);
         }
 
     }
@@ -104,7 +102,7 @@ public class CustomUserAdapter extends ArrayAdapter<String> {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for( DataSnapshot mDataSnapshot:dataSnapshot.child("Contacts").getChildren()) {
-                    Contact aux = mDataSnapshot.getValue(Contact.class);
+                    ContactOrBlock aux = mDataSnapshot.getValue(ContactOrBlock.class);
                     if(aux.getUsername().equals(email)){
                         key=mDataSnapshot.getKey();
                         for( String e:aux.getUsersList()) {
@@ -125,6 +123,5 @@ public class CustomUserAdapter extends ArrayAdapter<String> {
         return databaseContacts;
 
     }
-
 
 }

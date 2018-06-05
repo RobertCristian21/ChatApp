@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,8 @@ import android.widget.ListView;
 
 import com.example.user.chatapp.Activities.LoginActivity;
 import com.example.user.chatapp.Adapters.CustomUserAdapter;
+import com.example.user.chatapp.ContactOrBlock;
 import com.example.user.chatapp.R;
-import com.example.user.chatapp.Contact;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -149,6 +150,7 @@ public class AllUsersFragment extends Fragment {
 
     @Override
     public void onStart() {
+
         super.onStart();
         dref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -162,8 +164,24 @@ public class AllUsersFragment extends Fragment {
                         if (!user.equals(mAuth.getCurrentUser().getEmail()))
                                 Users.add(user);
                     }
-                    final CustomUserAdapter adapterUsers = new CustomUserAdapter(getContext(),Users);
-                    listView.setAdapter(adapterUsers);
+                    for(DataSnapshot contactSnapshot: dataSnapshot.child("Contacts").getChildren()){
+                        ContactOrBlock aux=contactSnapshot.getValue(ContactOrBlock.class);
+                        if(aux.getUsername().equals(mAuth.getCurrentUser().getEmail()))
+                            for(String e: aux.getUsersList())
+                                if(Users.contains(e))
+                                    Users.remove(e);
+                    }
+                    for (DataSnapshot blocksSnapshot: dataSnapshot.child("Blocks").getChildren()){
+                        ContactOrBlock aux=blocksSnapshot.getValue(ContactOrBlock.class);
+                        if(aux.getUsername().equals(mAuth.getCurrentUser().getEmail()))
+                            for(String e: aux.getUsersList())
+                                if(Users.contains(e))
+                                    Users.remove(e);
+                    }
+                    if(Users!=null&&getContext()!=null) {
+                        final CustomUserAdapter adapterUsers = new CustomUserAdapter(getContext(), Users);
+                        listView.setAdapter(adapterUsers);
+                    }
                 }
         }
 
@@ -172,6 +190,7 @@ public class AllUsersFragment extends Fragment {
 
             }
         });
+
     }
 
 }

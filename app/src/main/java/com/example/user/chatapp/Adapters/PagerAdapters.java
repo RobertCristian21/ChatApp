@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.user.chatapp.Fragments.AllUsersFragment;
+import com.example.user.chatapp.Fragments.BlocksFragment;
 import com.example.user.chatapp.Fragments.ContactsFragment;
 
 public class PagerAdapters extends FragmentStatePagerAdapter {
@@ -20,11 +21,14 @@ public class PagerAdapters extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                AllUsersFragment tab1=new AllUsersFragment();
+                ContactsFragment tab1=new ContactsFragment();
                 return tab1;
             case 1:
-                ContactsFragment tab2=new ContactsFragment();
+                AllUsersFragment tab2=new AllUsersFragment();
                 return tab2;
+            case 2:
+                BlocksFragment tab3=new BlocksFragment();
+                return tab3;
             default:
                 return null;
 

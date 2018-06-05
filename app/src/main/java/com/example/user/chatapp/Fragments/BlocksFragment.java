@@ -8,10 +8,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.user.chatapp.Activities.LoginActivity;
+import com.example.user.chatapp.Adapters.CustomBlockAdapter;
 import com.example.user.chatapp.Adapters.CustomContactAdapter;
 import com.example.user.chatapp.ContactOrBlock;
 import com.example.user.chatapp.R;
@@ -28,12 +29,12 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ContactsFragment.OnFragmentInteractionListener} interface
+ * {@link BlocksFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ContactsFragment#newInstance} factory method to
+ * Use the {@link BlocksFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ContactsFragment extends Fragment {
+public class BlocksFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -42,14 +43,16 @@ public class ContactsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    public ListView listView;
-    Button SingOut;
-    DatabaseReference dref= FirebaseDatabase.getInstance().getReference();
-    FirebaseAuth mAuth=FirebaseAuth.getInstance();
-    public ArrayList<String> Users=new ArrayList<>();
+
     private OnFragmentInteractionListener mListener;
 
-    public ContactsFragment() {
+
+    DatabaseReference dref= FirebaseDatabase.getInstance().getReference();
+    FirebaseAuth mAuth=FirebaseAuth.getInstance();
+    public ArrayList<String> BlockedUsers=new ArrayList<>();
+    public ListView listView;
+
+    public BlocksFragment() {
         // Required empty public constructor
     }
 
@@ -59,11 +62,11 @@ public class ContactsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ContactsFragment.
+     * @return A new instance of fragment BlocksFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ContactsFragment newInstance(String param1, String param2) {
-        ContactsFragment fragment = new ContactsFragment();
+    public static BlocksFragment newInstance(String param1, String param2) {
+        BlocksFragment fragment = new BlocksFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -83,25 +86,16 @@ public class ContactsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view=inflater.inflate(R.layout.fragment_contacts,container,false);
-        listView=view.findViewById(R.id.list_view_contacts);
-
-        SingOut =  view.findViewById(R.id.button_signout);
+        final View view=inflater.inflate(R.layout.fragment_blocks,container,false);
+        listView=view.findViewById(R.id.list_view_blocks);
 
         FirebaseUser user=mAuth.getCurrentUser();
         if(user==null){
             startActivity(new Intent(getContext(),LoginActivity.class));
         }
-        if(SingOut !=null) {
-            SingOut.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mAuth.signOut();
-                    startActivity(new Intent(getContext(), LoginActivity.class));
-                }
-            });
-        }
+
         return view;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -142,31 +136,28 @@ public class ContactsFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
     @Override
     public void onStart() {
         super.onStart();
+
         dref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Users.clear();
+                BlockedUsers.clear();
                 if(mAuth!=null&&listView!=null) {
-                    Users.clear();
-                    for (DataSnapshot userSnapshot : dataSnapshot.child("Contacts").getChildren()) {
+                    BlockedUsers.clear();
+                    for (DataSnapshot userSnapshot : dataSnapshot.child("Blocks").getChildren()) {
                         ContactOrBlock contactOrBlock =userSnapshot.getValue(ContactOrBlock.class);
 
                         if (contactOrBlock.getUsername().equals(mAuth.getCurrentUser().getEmail()))
-                            for(String e : contactOrBlock.getUsersList())
-                                Users.add(e);
+                            for(String e : contactOrBlock.getUsersList()) {
+                                BlockedUsers.add(e);
+                            }
                     }
-                    for (DataSnapshot blocksSnapshot: dataSnapshot.child("Blocks").getChildren()){
-                        ContactOrBlock aux=blocksSnapshot.getValue(ContactOrBlock.class);
-                        if(aux.getUsername().equals(mAuth.getCurrentUser().getEmail()))
-                            for(String e: aux.getUsersList())
-                                if(Users.contains(e))
-                                    Users.remove(e);
-                    }
-                    if(Users!=null&&getContext()!=null) {
-                        final CustomContactAdapter adapterUsers = new CustomContactAdapter(getContext(), Users);
+                    if(BlockedUsers!=null&&getContext()!=null) {
+                        final CustomBlockAdapter adapterUsers = new CustomBlockAdapter(getContext(), BlockedUsers);
                         listView.setAdapter(adapterUsers);
                     }
                 }
@@ -177,5 +168,6 @@ public class ContactsFragment extends Fragment {
 
             }
         });
+
     }
 }
