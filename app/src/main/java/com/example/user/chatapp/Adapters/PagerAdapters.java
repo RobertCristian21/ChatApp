@@ -10,7 +10,7 @@ import com.example.user.chatapp.Fragments.ContactsFragment;
 
 public class PagerAdapters extends FragmentStatePagerAdapter {
 
-    int noOfTabs;
+    private int noOfTabs;
 
     public PagerAdapters(FragmentManager fm, int noOfTabs) {
         super(fm);
@@ -21,14 +21,11 @@ public class PagerAdapters extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                ContactsFragment tab1=new ContactsFragment();
-                return tab1;
+                return new ContactsFragment();
             case 1:
-                AllUsersFragment tab2=new AllUsersFragment();
-                return tab2;
+                return new AllUsersFragment();
             case 2:
-                BlocksFragment tab3=new BlocksFragment();
-                return tab3;
+                return new BlocksFragment();
             default:
                 return null;
 

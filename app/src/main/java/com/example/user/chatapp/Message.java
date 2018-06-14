@@ -1,9 +1,8 @@
 package com.example.user.chatapp;
 
-import java.util.Objects;
 
 public class Message {
-    String sender,receiver,text,password,algorithm;
+    private String sender,receiver,text,password,algorithm;
 
     public Message(String sender, String receiver, String text,String password,String algorithm) {
         this.sender = sender;
@@ -62,22 +61,20 @@ public class Message {
         this.algorithm = algorithm;
     }
 
-    @Override
+/*    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Message message = (Message) o;
-        return Objects.equals(sender, message.sender) &&
-                Objects.equals(receiver, message.receiver) &&
-                Objects.equals(text, message.text)&&
-                Objects.equals(password,message.password)&&
-                Objects.equals(algorithm,message.algorithm);
+        if (!(!Objects.equals(sender, message.sender) || !Objects.equals(receiver, message.receiver) || !Objects.equals(text, message.text) || !Objects.equals(password, message.password) || !Objects.equals(algorithm, message.algorithm)))
+            return true;
+        else return false;
     }
 
     @Override
     public int hashCode() {
 
         return Objects.hash(sender, receiver, text,password,algorithm);
-    }
+    }*/
 }
 

@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import static android.support.v4.content.ContextCompat.startActivity;
 
 public class CustomUserAdapter extends ArrayAdapter<String> {
-    ArrayList<String> databaseContacts=new ArrayList<>();
-    String key;
+    private ArrayList<String> databaseContacts=new ArrayList<>();
+    private String key;
     public CustomUserAdapter(@NonNull Context context, ArrayList<String> user) {
         super(context, R.layout.custom_users_row,user);
     }
@@ -44,19 +44,27 @@ public class CustomUserAdapter extends ArrayAdapter<String> {
         final String user=this.getItem(position);
         final TextView messageView= customView.findViewById(R.id.textView_custom_user);
 
+        String currentUser;
+        try{
+            currentUser=mAuth.getCurrentUser().getEmail();
+        }
+        catch (Exception e) {
+            currentUser="";
+        }
         messageView.setText(user);
-        databaseContacts=GetDatabaseContacts(mAuth.getCurrentUser().getEmail());
+        databaseContacts=GetDatabaseContacts(currentUser);
 
 
         final Button add_delete=customView.findViewById(R.id.button_add_delete);
 
+        final String finalCurrentUser = currentUser;
         messageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), MessageActivity.class);
 
                 intent.putExtra("clickedUser", messageView.getText().toString());
-                intent.putExtra("currentUser", mAuth.getCurrentUser().getEmail());
+                intent.putExtra("currentUser", finalCurrentUser);
                 Toast.makeText(getContext(), messageView.getText().toString(), Toast.LENGTH_SHORT).show();
                 startActivity(getContext(),intent,null);
             }
@@ -64,7 +72,7 @@ public class CustomUserAdapter extends ArrayAdapter<String> {
         add_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToContacts(mAuth.getCurrentUser().getEmail(),user);
+                addToContacts(finalCurrentUser,user);
             }
         });
         return customView;

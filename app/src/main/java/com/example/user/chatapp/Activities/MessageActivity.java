@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MessageActivity extends AppCompatActivity {
-    private Button Send;
     ListView ListMessages;
     private DatabaseReference dref;
     ArrayList<Message> messages=new ArrayList<>();
@@ -44,7 +43,7 @@ public class MessageActivity extends AppCompatActivity {
         dref= FirebaseDatabase.getInstance().getReference();
         ListMessages=findViewById(R.id.list_view_allmessages);
         messageTex=findViewById(R.id.edit_text_newtext);
-        Send=findViewById(R.id.button_send);
+        Button Send=findViewById(R.id.button_send);
 
         Send.setOnClickListener(new View.OnClickListener() {
             String passAux;

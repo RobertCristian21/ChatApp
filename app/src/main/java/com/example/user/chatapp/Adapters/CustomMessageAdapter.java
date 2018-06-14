@@ -27,8 +27,8 @@ public class CustomMessageAdapter extends ArrayAdapter<Message> {
 
         String message=this.getItem(position).getText();
         String sender=this.getItem(position).getSender();
-        TextView messageView=(TextView) customView.findViewById(R.id.edit_text_custommessage);
-        TextView senderView=(TextView) customView.findViewById(R.id.edit_text_customsender);
+        TextView messageView=customView.findViewById(R.id.edit_text_custommessage);
+        TextView senderView=customView.findViewById(R.id.edit_text_customsender);
 
         messageView.setText(message);
         senderView.setText(sender);

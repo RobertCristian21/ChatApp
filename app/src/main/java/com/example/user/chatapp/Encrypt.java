@@ -29,7 +29,7 @@ public class Encrypt {
         return Base64.encodeToString(encVal,Base64.DEFAULT);
     }
 
-    public static SecretKeySpec generateKey(String password,String algorithm) throws Exception {
+    private static SecretKeySpec generateKey(String password,String algorithm) throws Exception {
         final MessageDigest digest= MessageDigest.getInstance("SHA-256");
         byte[] bytes=password.getBytes("UTF-8");
 

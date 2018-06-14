@@ -28,12 +28,11 @@ import static android.support.v4.content.ContextCompat.startActivity;
 
 
 public class CustomContactAdapter extends ArrayAdapter<String> {
-    String keyContacts;
-    ArrayList<String> Users=new ArrayList<>();
+    private String mKeyContacts;
+    private ArrayList<String> Users=new ArrayList<>();
+    private DatabaseReference dref= FirebaseDatabase.getInstance().getReference();
+    private String keyBlocks;
     ArrayList<String> Blocks=new ArrayList<>();
-    DatabaseReference dref= FirebaseDatabase.getInstance().getReference();
-     String keyBlocks;
-
     public CustomContactAdapter(@NonNull Context context, @NonNull ArrayList<String> contacts) {
         super(context, R.layout.custom_contact_row,contacts);
     }
@@ -47,20 +46,29 @@ public class CustomContactAdapter extends ArrayAdapter<String> {
 
         final String user=this.getItem(position);
         final TextView messageView= customView.findViewById(R.id.textView_custom_contact);
-
+        Blocks=getBlockList(mAuth.getCurrentUser().getEmail());
         messageView.setText(user);
         Button delete=customView.findViewById(R.id.button_delete);
 
         Button block=customView.findViewById(R.id.button_block);
-        getContactList(mAuth.getCurrentUser().getEmail());
+        String currentUser;
+        try
+        {
+            currentUser=mAuth.getCurrentUser().getEmail();
+        }
+        catch (Exception e){
+            currentUser="";
+        }
+        getContactList(currentUser);
 
+        final String finalCurrentUser = currentUser;
         messageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), MessageActivity.class);
 
                 intent.putExtra("clickedUser", messageView.getText().toString());
-                intent.putExtra("currentUser", mAuth.getCurrentUser().getEmail());
+                intent.putExtra("currentUser", finalCurrentUser);
                 Toast.makeText(getContext(), messageView.getText().toString(), Toast.LENGTH_SHORT).show();
                 startActivity(getContext(),intent,null);
             }
@@ -69,7 +77,7 @@ public class CustomContactAdapter extends ArrayAdapter<String> {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DeleteContact(mAuth.getCurrentUser().getEmail(),user);
+                DeleteContact(finalCurrentUser,user);
             }
         });
 
@@ -77,7 +85,7 @@ public class CustomContactAdapter extends ArrayAdapter<String> {
         block.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BlockUser(mAuth.getCurrentUser().getEmail(),user);
+                BlockUser(finalCurrentUser,user);
             }
         });
         return customView;
@@ -92,7 +100,7 @@ public class CustomContactAdapter extends ArrayAdapter<String> {
                 for (DataSnapshot mDataSnapshot : dataSnapshot.child("Contacts").getChildren()) {
                     ContactOrBlock aux = mDataSnapshot.getValue(ContactOrBlock.class);
                     if (aux.getUsername().equals(email)) {
-                        keyContacts = mDataSnapshot.getKey();
+                        mKeyContacts = mDataSnapshot.getKey();
                         for (String e : aux.getUsersList()) {
                             Users.add(e);
                         }
@@ -106,8 +114,6 @@ public class CustomContactAdapter extends ArrayAdapter<String> {
 
             }
         });
-
-       // Toast.makeText(getContext(),key+Users.toString(),Toast.LENGTH_SHORT).show();
     }
 
 
@@ -115,22 +121,22 @@ public class CustomContactAdapter extends ArrayAdapter<String> {
         getContactList(email);
         if(Users.contains(user))
             Users.remove(user);
-        dref.child("Contacts").child(keyContacts).setValue(new ContactOrBlock(email,Users));
-       // Toast.makeText(getContext(),user+ " Successfully removed from contacts ",Toast.LENGTH_SHORT).show();
+        dref.child("Contacts").child(mKeyContacts).setValue(new ContactOrBlock(email,Users));
     }
 
-    private void getBlockList(final String email) {
+    private ArrayList<String> getBlockList(final String email) {
+        final ArrayList<String> BlockList=new ArrayList<>();
         dref.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Blocks.clear();
+                BlockList.clear();
                 for (DataSnapshot mDataSnapshot : dataSnapshot.child("Blocks").getChildren()) {
                     ContactOrBlock aux = mDataSnapshot.getValue(ContactOrBlock.class);
                     if (aux.getUsername().equals(email)) {
                         keyBlocks = mDataSnapshot.getKey();
                         for (String e : aux.getUsersList()) {
-                            Blocks.add(e);
+                            BlockList.add(e);
                         }
                     }
 
@@ -142,19 +148,29 @@ public class CustomContactAdapter extends ArrayAdapter<String> {
 
             }
         });
-
-        // Toast.makeText(getContext(),key+Users.toString(),Toast.LENGTH_SHORT).show();
+        return BlockList;
     }
 
 
     private void BlockUser(final String email, String user) {
-        getBlockList(email);
-        if(Blocks.contains(user))
-            Blocks.remove(user);
+        ContactOrBlock newContactOrBlock =new ContactOrBlock();
+        newContactOrBlock.setUsername(email);
+        ArrayList<String>previousBlocks=new ArrayList<>();
+        if(Blocks!=null&&keyBlocks!=null) {
+            for (String e : Blocks)
+                if (!previousBlocks.contains(e))
+                    previousBlocks.add(e);
+            if (!previousBlocks.contains(user))
+                previousBlocks.add(user);
+            newContactOrBlock.setContacts(previousBlocks);
+
+            dref.child("Blocks").child(keyBlocks).setValue(newContactOrBlock);
+        }
         else
-            Blocks.add(user);
-        if(keyBlocks!=null&&Blocks!=null)
-        dref.child("Blocks").child(keyBlocks).setValue(new ContactOrBlock(email,Blocks));
-        // Toast.makeText(getContext(),user+ " Successfully removed from contacts ",Toast.LENGTH_SHORT).show();
+        {
+            previousBlocks.add(user);
+            newContactOrBlock.setContacts(previousBlocks);
+            dref.child("Blocks").child(dref.push().getKey()).setValue(newContactOrBlock);
+        }
     }
 }

@@ -20,10 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText Username;
-    private EditText Password;
-    private Button Login;
-    private Button Register;
+    private EditText mUsername;
+    private EditText mPassword;
 
     private FirebaseAuth mAuth;
     @Override
@@ -32,10 +30,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
-        Username=findViewById(R.id.edit_text_username);
-        Password=findViewById(R.id.edit_text_password);
-        Login=findViewById(R.id.button_login);
-        Register=findViewById(R.id.button_register);
+        mUsername =findViewById(R.id.edit_text_username);
+        mPassword =findViewById(R.id.edit_text_password);
+        Button login = findViewById(R.id.button_login);
+        Button register = findViewById(R.id.button_register);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user=mAuth.getCurrentUser();
 
@@ -44,27 +42,27 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this,HomeActivity.class));
         }
 
-        Login.setOnClickListener(new View.OnClickListener() {
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Username.getText().toString().length()<4||Password.getText().toString().length()<6)
+                if(mUsername.getText().toString().length()<4|| mPassword.getText().toString().length()<6)
                     Toast.makeText(LoginActivity.this,"Login failed, please try again.", Toast.LENGTH_SHORT).show();
                 else
-                    validate(Username.getText().toString(),Password.getText().toString());
+                    validate(mUsername.getText().toString(), mPassword.getText().toString());
             }
         });
 
-        Register.setOnClickListener(new View.OnClickListener() {
+        register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Username.getText().toString().length()>4&&Password.getText().toString().length()>6) {
-                    mAuth.createUserWithEmailAndPassword(Username.getText().toString(), Password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                if(mUsername.getText().toString().length()>4&& mPassword.getText().toString().length()>6) {
+                    mAuth.createUserWithEmailAndPassword(mUsername.getText().toString(), mPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 DatabaseReference mDatabase= FirebaseDatabase.getInstance().getReference();
                                 String id=mDatabase.push().getKey();
-                                mDatabase.child("Users").child(id).setValue(Username.getText().toString());
+                                mDatabase.child("Users").child(id).setValue(mUsername.getText().toString());
 
                                 startActivity(new Intent(LoginActivity.this, HomeActivity.class));
 
