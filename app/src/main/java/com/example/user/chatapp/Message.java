@@ -2,13 +2,13 @@ package com.example.user.chatapp;
 
 
 public class Message {
-    private String sender,receiver,text,password,algorithm;
+    private String sender,receiver,text,date,algorithm;
 
-    public Message(String sender, String receiver, String text,String password,String algorithm) {
+    public Message(String sender, String receiver, String text,String date,String algorithm) {
         this.sender = sender;
         this.receiver = receiver;
         this.text = text;
-        this.password = password;
+        this.date = date;
         this.algorithm=algorithm;
     }
     public Message(){
@@ -17,7 +17,7 @@ public class Message {
         this.setText(a.getText());
         this.setReceiver(a.getReceiver());
         this.setSender(a.getSender());
-        this.setPassword(a.getPassword());
+        this.setDate(a.getDate());
         this.setAlgorithm(a.getAlgorithm());
     }
 
@@ -45,12 +45,12 @@ public class Message {
         this.text = text;
     }
 
-    public String getPassword() {
-        return password;
+    public String getDate() {
+        return date;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getAlgorithm() {

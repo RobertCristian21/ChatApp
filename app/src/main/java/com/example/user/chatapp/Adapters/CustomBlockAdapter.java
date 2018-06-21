@@ -28,6 +28,7 @@ public class CustomBlockAdapter extends ArrayAdapter<String> {
     private DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
     private String keyBlocks;
     private final ArrayList<String> BlockedUsers=new ArrayList<>();
+
     public CustomBlockAdapter(@NonNull Context context, @NonNull  ArrayList<String> blocked) {
         super(context, R.layout.custom_block_row,blocked);
 

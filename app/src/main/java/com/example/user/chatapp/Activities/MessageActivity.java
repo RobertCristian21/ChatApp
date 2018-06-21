@@ -1,5 +1,6 @@
 package com.example.user.chatapp.Activities;
 
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -44,9 +45,10 @@ public class MessageActivity extends AppCompatActivity {
         ListMessages=findViewById(R.id.list_view_allmessages);
         messageTex=findViewById(R.id.edit_text_newtext);
         Button Send=findViewById(R.id.button_send);
-
+        TabLayout tabLayout = findViewById(R.id.tab_user);
+        tabLayout.addTab(tabLayout.newTab().setText(getIntent().getStringExtra("clickedUser").toLowerCase()));
         Send.setOnClickListener(new View.OnClickListener() {
-            String passAux;
+            //String passAux;
             @Override
             public void onClick(View v) {
                 boolean encryptedSuccessful;
@@ -55,14 +57,14 @@ public class MessageActivity extends AppCompatActivity {
 
                 newMessage.setReceiver(getIntent().getStringExtra("clickedUser"));
 
-                if(newMessage.getReceiver().compareTo(newMessage.getSender())>0)
+             /*   if(newMessage.getReceiver().compareTo(newMessage.getSender())>0)
                     passAux+=newMessage.getSender()+newMessage.getReceiver();
                 else
-                    passAux+=newMessage.getReceiver()+newMessage.getSender();
+                    passAux+=newMessage.getReceiver()+newMessage.getSender();*/
                 try {
                     String encryptedMessage= Encrypt.encrypts(messageTex.getText().toString(),currentDateTimeString,algorithm);
                     newMessage.setText(encryptedMessage);
-                    newMessage.setPassword(currentDateTimeString);
+                    newMessage.setDate(currentDateTimeString);
                     newMessage.setAlgorithm(algorithm);
                     encryptedSuccessful=true;
                 } catch (Exception e) {
@@ -83,29 +85,27 @@ public class MessageActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         dref.addValueEventListener(new ValueEventListener() {
-            String passAux;
+           // String passAux;
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean decryptedSuccessful;
                 messages.clear();
                 String clickedUser=getIntent().getStringExtra("clickedUser");
                 String currentUser=getIntent().getStringExtra("currentUser");
-                if(clickedUser.compareTo(currentUser)>0)
-                    passAux+=currentUser+clickedUser;
-                else
-                    passAux+=clickedUser+currentUser;
 
                 for( DataSnapshot mSnapshot: dataSnapshot.child("Messages").getChildren()){
                     Message text=new Message(mSnapshot.getValue(Message.class));
                     if(text.getText()!=null&&text.getReceiver()!=null&&text.getSender()!=null)
-                    if((text.getReceiver().equals(clickedUser)&& text.getSender().equals(currentUser))||
+                        if(CheckMessage(text,currentUser,clickedUser)!=null)
+                            messages.add(text);
+                   /* if((text.getReceiver().equals(clickedUser)&& text.getSender().equals(currentUser))||
                             (
                         text.getSender().equals(clickedUser)&& text.getReceiver().equals(currentUser)
                             )) {
                         try {
                             if(text.getAlgorithm()!=null)
                                 alg=text.getAlgorithm();
-                            text.setText(Encrypt.decrypts(text.getText(),text.getPassword(),alg));
+                            text.setText(Encrypt.decrypts(text.getText(),text.getDate(),alg));
                             decryptedSuccessful=true;
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -115,10 +115,10 @@ public class MessageActivity extends AppCompatActivity {
                             messages.add(text);
 
                     }
+                }*/
                 }
-                final ArrayAdapter<Message> adapter2=new CustomMessageAdapter(MessageActivity.this,messages);
-                //final ArrayAdapter<String> adapter2=new ArrayAdapter<String>(MessageActivity.this,android.R.layout.simple_dropdown_item_1line,messages);
-                ListMessages.setAdapter(adapter2);
+                final ArrayAdapter<Message> adapter=new CustomMessageAdapter(MessageActivity.this,messages);
+                ListMessages.setAdapter(adapter);
             }
 
             @Override
@@ -126,6 +126,30 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private Message CheckMessage(Message text, String currentUser, String clickedUser) {
+
+        if(text.getSender().contains(","))
+            if(text.getSender().substring(0,text.getSender().length()-1).equals(currentUser))
+                return null;
+            else
+                text.setSender(text.getSender().substring(0,text.getSender().length()-1));
+        if(text.getReceiver().contains(","))
+            if(text.getReceiver().substring(0,text.getReceiver().length()-1).equals(currentUser))
+                return null;
+            else
+                text.setReceiver(text.getReceiver().substring(0,text.getReceiver().length()-1));
+        if(text.getReceiver().equals(currentUser)&&text.getSender().equals(clickedUser)||
+                text.getSender().equals(currentUser)&&text.getReceiver().equals(clickedUser))
+            try {
+                if(text.getAlgorithm()!=null)
+                    alg=text.getAlgorithm();
+                text.setText(Encrypt.decrypts(text.getText(),text.getDate(),alg));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        return text;
     }
 
     @Override

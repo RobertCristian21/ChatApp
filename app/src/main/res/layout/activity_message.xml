@@ -10,29 +10,22 @@
 
     >
 
-    <ListView
-        android:id="@+id/list_view_allmessages"
-        android:layout_width="wrap_content"
-        android:layout_height="468dp"
-        android:inputType="textMultiLine"
-        android:scrollbars="none"
-        android:smoothScrollbar="true"
-        android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/edit_text_newtext"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_conversion_absoluteHeight="495dp"
-        tools:layout_conversion_absoluteWidth="368dp" />
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <EditText
         android:id="@+id/edit_text_newtext"
-        android:layout_width="wrap_content"
+        android:layout_width="252dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="136dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="136dp"
+        android:layout_marginStart="8dp"
         android:ems="10"
         android:hint="Message"
         android:inputType="textMultiLine"
@@ -41,11 +34,9 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list_view_allmessages"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.75"
         tools:layout_conversion_absoluteHeight="175dp"
-        tools:layout_conversion_absoluteWidth="1dp"
-        tools:layout_editor_absoluteX="392dp"
-        tools:layout_editor_absoluteY="89dp" />
+        tools:layout_conversion_absoluteWidth="1dp" />
 
     <Button
         android:id="@+id/button_send"
@@ -56,10 +47,27 @@
         android:text="Send"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.78"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toEndOf="@+id/edit_text_newtext"
         app:layout_constraintTop_toBottomOf="@+id/list_view_allmessages"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.609"
         tools:layout_conversion_absoluteHeight="88dp"
         tools:layout_conversion_absoluteWidth="1dp" />
+
+    <ListView
+        android:id="@+id/list_view_allmessages"
+        android:layout_width="wrap_content"
+        android:layout_height="410dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:inputType="textMultiLine"
+        android:scrollbars="none"
+        android:smoothScrollbar="true"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tab_user"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp" />
+
 </android.support.constraint.ConstraintLayout>

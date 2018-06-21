@@ -152,16 +152,16 @@ public class ContactsFragment extends Fragment {
                 if(mAuth!=null&&listView!=null) {
                     Users.clear();
                     for (DataSnapshot userSnapshot : dataSnapshot.child("Contacts").getChildren()) {
-                        ContactOrBlock contactOrBlock =userSnapshot.getValue(ContactOrBlock.class);
+                        ContactOrBlock contact =userSnapshot.getValue(ContactOrBlock.class);
 
-                        if (contactOrBlock.getUsername().equals(mAuth.getCurrentUser().getEmail()))
-                            for(String e : contactOrBlock.getUsersList())
+                        if (contact.getUsername().equals(mAuth.getCurrentUser().getEmail()))
+                            for(String e : contact.getUsersList())
                                 Users.add(e);
                     }
                     for (DataSnapshot blocksSnapshot: dataSnapshot.child("Blocks").getChildren()){
-                        ContactOrBlock aux=blocksSnapshot.getValue(ContactOrBlock.class);
-                        if(aux.getUsername().equals(mAuth.getCurrentUser().getEmail()))
-                            for(String e: aux.getUsersList())
+                        ContactOrBlock block=blocksSnapshot.getValue(ContactOrBlock.class);
+                        if(block.getUsername().equals(mAuth.getCurrentUser().getEmail()))
+                            for(String e: block.getUsersList())
                                 if(Users.contains(e))
                                     Users.remove(e);
                     }

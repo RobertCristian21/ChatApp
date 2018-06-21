@@ -40,8 +40,8 @@ public class AllUsersFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     DatabaseReference dref= FirebaseDatabase.getInstance().getReference();
-     FirebaseAuth mAuth=FirebaseAuth.getInstance();
-     ArrayList<String> Users=new ArrayList<>();
+    FirebaseAuth mAuth=FirebaseAuth.getInstance();
+    ArrayList<String> Users=new ArrayList<>();
     Button SingOut;
     ListView listView;
     // TODO: Rename and change types of parameters

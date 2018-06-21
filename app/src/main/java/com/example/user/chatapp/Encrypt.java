@@ -13,11 +13,8 @@ public class Encrypt {
         SecretKeySpec key= generateKey(password,algorithm);
         Cipher c=Cipher.getInstance(algorithm);
         c.init(Cipher.DECRYPT_MODE,key);
-
         byte[] decryptedVal= Base64.decode(text,Base64.DEFAULT);
-
         byte [] devVal=c.doFinal(decryptedVal);
-
         return new String(devVal);
     }
 
