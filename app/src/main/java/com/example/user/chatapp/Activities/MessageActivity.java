@@ -1,11 +1,14 @@
 package com.example.user.chatapp.Activities;
 
+import android.content.Context;
+import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,17 +28,18 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MessageActivity extends AppCompatActivity {
     ListView ListMessages;
     private DatabaseReference dref;
     ArrayList<Message> messages=new ArrayList<>();
+    ArrayList<String> keys=new ArrayList<>();
     private EditText messageTex;
     String algorithm="AES";//used in encrypting the messages when sent
     String alg;//used in decrypting messages when reading them
-
     String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-
+    Message oldMessage=new Message();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +51,31 @@ public class MessageActivity extends AppCompatActivity {
         Button Send=findViewById(R.id.button_send);
         TabLayout tabLayout = findViewById(R.id.tab_user);
         tabLayout.addTab(tabLayout.newTab().setText(getIntent().getStringExtra("clickedUser").toLowerCase()));
+
+        ListMessages.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                final Message aux=messages.get(position);
+                oldMessage=aux;
+                if(aux.getSender().equals(getIntent().getStringExtra("currentUser")))
+                    aux.setSender(aux.getSender()+" ");
+                else
+                    if(aux.getReceiver().equals(getIntent().getStringExtra("currentUser")))
+                        aux.setReceiver(aux.getReceiver()+" ");
+                String encryptedMessage= null;
+                try {
+                    encryptedMessage = Encrypt.encrypts(aux.getText(),aux.getDate(),aux.getAlgorithm());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                    aux.setText(encryptedMessage);
+                    dref.child("Messages").child(keys.get(position)).setValue(aux);
+                return false;
+
+            }
+        });
+
         Send.setOnClickListener(new View.OnClickListener() {
-            //String passAux;
             @Override
             public void onClick(View v) {
                 boolean encryptedSuccessful;
@@ -57,10 +84,6 @@ public class MessageActivity extends AppCompatActivity {
 
                 newMessage.setReceiver(getIntent().getStringExtra("clickedUser"));
 
-             /*   if(newMessage.getReceiver().compareTo(newMessage.getSender())>0)
-                    passAux+=newMessage.getSender()+newMessage.getReceiver();
-                else
-                    passAux+=newMessage.getReceiver()+newMessage.getSender();*/
                 try {
                     String encryptedMessage= Encrypt.encrypts(messageTex.getText().toString(),currentDateTimeString,algorithm);
                     newMessage.setText(encryptedMessage);
@@ -85,37 +108,29 @@ public class MessageActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         dref.addValueEventListener(new ValueEventListener() {
-           // String passAux;
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean decryptedSuccessful;
+            public void onDataChange(DataSnapshot dataSnapshot){
                 messages.clear();
+                keys.clear();
                 String clickedUser=getIntent().getStringExtra("clickedUser");
                 String currentUser=getIntent().getStringExtra("currentUser");
 
                 for( DataSnapshot mSnapshot: dataSnapshot.child("Messages").getChildren()){
                     Message text=new Message(mSnapshot.getValue(Message.class));
-                    if(text.getText()!=null&&text.getReceiver()!=null&&text.getSender()!=null)
-                        if(CheckMessage(text,currentUser,clickedUser)!=null)
-                            messages.add(text);
-                   /* if((text.getReceiver().equals(clickedUser)&& text.getSender().equals(currentUser))||
-                            (
-                        text.getSender().equals(clickedUser)&& text.getReceiver().equals(currentUser)
-                            )) {
-                        try {
-                            if(text.getAlgorithm()!=null)
-                                alg=text.getAlgorithm();
-                            text.setText(Encrypt.decrypts(text.getText(),text.getDate(),alg));
-                            decryptedSuccessful=true;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            decryptedSuccessful=false;
-                        }
-                        if(decryptedSuccessful)
-                            messages.add(text);
+                    if(text.getText()!=null&&text.getReceiver()!=null&&text.getSender()!=null) {
 
+                        if(text.getSender().contains(" ")&&text.getReceiver().contains(" "))
+                            dref.child("Messages").child(mSnapshot.getKey()).setValue(null);
+
+                        else {
+                            text = CheckMessage(text, currentUser, clickedUser);
+
+                            if (text != null) {
+                                messages.add(text);
+                                keys.add(mSnapshot.getKey());
+                            }
+                        }
                     }
-                }*/
                 }
                 final ArrayAdapter<Message> adapter=new CustomMessageAdapter(MessageActivity.this,messages);
                 ListMessages.setAdapter(adapter);
@@ -129,27 +144,30 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private Message CheckMessage(Message text, String currentUser, String clickedUser) {
-
-        if(text.getSender().contains(","))
-            if(text.getSender().substring(0,text.getSender().length()-1).equals(currentUser))
+        String Sender=text.getSender();
+        String Receiver=text.getReceiver();
+        if (text.getSender().contains(" ")) {
+            Sender=Sender.substring(0,Sender.length()-1);
+            if (text.getSender().substring(0, text.getSender().length() - 1).equals(currentUser))
                 return null;
-            else
-                text.setSender(text.getSender().substring(0,text.getSender().length()-1));
-        if(text.getReceiver().contains(","))
-            if(text.getReceiver().substring(0,text.getReceiver().length()-1).equals(currentUser))
+        }
+        if (text.getReceiver().contains(" ")) {
+            Receiver=Receiver.substring(0,Receiver.length()-1);
+            if (text.getReceiver().substring(0, text.getReceiver().length() - 1).equals(currentUser))
                 return null;
-            else
-                text.setReceiver(text.getReceiver().substring(0,text.getReceiver().length()-1));
-        if(text.getReceiver().equals(currentUser)&&text.getSender().equals(clickedUser)||
-                text.getSender().equals(currentUser)&&text.getReceiver().equals(clickedUser))
+        }
+        if((Sender.equals(currentUser)&&Receiver.equals(clickedUser))||(
+                Receiver.equals(currentUser)&&Sender.equals(clickedUser))) {
             try {
-                if(text.getAlgorithm()!=null)
-                    alg=text.getAlgorithm();
-                text.setText(Encrypt.decrypts(text.getText(),text.getDate(),alg));
+                if (text.getAlgorithm() != null)
+                    alg = text.getAlgorithm();
+                text.setText(Encrypt.decrypts(text.getText(), text.getDate(), alg));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        return text;
+            return text;
+        }
+        return null;
     }
 
     @Override

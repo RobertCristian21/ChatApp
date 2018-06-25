@@ -76,5 +76,16 @@ public class Message {
 
         return Objects.hash(sender, receiver, text,password,algorithm);
     }*/
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "sender='" + sender + '\'' +
+                ", receiver='" + receiver + '\'' +
+                ", text='" + text + '\'' +
+                ", date='" + date + '\'' +
+                ", algorithm='" + algorithm + '\'' +
+                '}';
+    }
 }
 
